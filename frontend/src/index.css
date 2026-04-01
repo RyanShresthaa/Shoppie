@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-bg: #f5f6f8;
+  --app-surface: #ffffff;
+  --app-surface-alt: #f1f3f5;
+  --app-text: #1f2937;
+  --app-muted: #6b7280;
+  --app-border: #e5e7eb;
+  --app-accent: #111827;
+  --app-accent-hover: #000000;
+  --app-success: #16a34a;
+  --app-danger: #dc2626;
+}
+
+/* Mobile: prevent overflow and use safe areas for notched devices */
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  height: 100%;
+}
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  @apply text-neutral-700;
+  background: var(--app-bg);
+  color: var(--app-text);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  margin: 0;
+}
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@layer components {
+  .app-surface {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(17, 24, 39, 0.04);
+  }
+
+  .app-heading {
+    @apply font-semibold tracking-tight;
+    color: var(--app-text);
+  }
+
+  .app-subtle {
+    color: var(--app-muted);
+  }
+
+  .app-btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .app-btn-primary {
+    background: var(--app-accent);
+    color: #fff;
+  }
+  .app-btn-primary:hover {
+    background: var(--app-accent-hover);
+  }
+
+  .app-btn-outline {
+    border: 1px solid var(--app-border);
+    background: #fff;
+    color: var(--app-text);
+  }
+  .app-btn-outline:hover {
+    background: var(--app-surface-alt);
+  }
+
+  .app-input {
+    @apply w-full rounded-lg border px-3 py-2 text-sm outline-none transition;
+    border-color: var(--app-border);
+    background: #fff;
+    color: var(--app-text);
+  }
+  .app-input:focus {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+  }
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(17, 24, 39, 0.18);
+  outline-offset: 2px;
+}
+
+/* Better touch on mobile: no tap flash, prevent iOS input zoom */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
