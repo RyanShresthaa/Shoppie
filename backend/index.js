@@ -21,14 +21,23 @@ import adminRouter from './route/admin.route.js';
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb', parameterLimit: 50000 }));
-const allowedOrigins = [process.env.FRONTEND_URL].filter(Boolean);
+function collectAllowedOrigins() {
+    const raw = [
+        process.env.FRONTEND_URL,
+        process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
+        process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+            `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`,
+    ].filter(Boolean);
+    return new Set(raw.map((u) => String(u).replace(/\/$/, "")));
+}
+
+const allowedOrigins = collectAllowedOrigins();
 
 app.use(cors({
     credentials: true,
     origin: (origin, callback) => {
-        // Allow non-browser requests and configured dev origins
         const isLocalhostDev = /^http:\/\/localhost:\d+$/.test(origin || "");
-        if (!origin || allowedOrigins.includes(origin) || isLocalhostDev) {
+        if (!origin || allowedOrigins.has(origin) || isLocalhostDev) {
             return callback(null, true);
         }
         return callback(new Error("Not allowed by CORS"));
