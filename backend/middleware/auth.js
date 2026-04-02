@@ -25,11 +25,11 @@ const auth = async(request,response,next)=>{
         next()
 
     } catch (error) {
-        return response.status(500).json({
-            message : "You have not login",///error.message || error,
-            error : true,
-            success : false
-        })
+        return response.status(401).json({
+            message: "You have not login",
+            error: true,
+            success: false,
+        });
     }
 }
 

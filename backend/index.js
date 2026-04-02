@@ -21,29 +21,15 @@ import adminRouter from './route/admin.route.js';
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb', parameterLimit: 50000 }));
-function collectAllowedOrigins() {
-    const raw = [
-        process.env.FRONTEND_URL,
-        process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
-        process.env.VERCEL_PROJECT_PRODUCTION_URL &&
-            `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`,
-    ].filter(Boolean);
-    return new Set(raw.map((u) => String(u).replace(/\/$/, "")));
-}
-
-const allowedOrigins = collectAllowedOrigins();
-
-app.use(cors({
-    credentials: true,
-    origin: (origin, callback) => {
-        const isLocalhostDev = /^http:\/\/localhost:\d+$/.test(origin || "");
-        if (!origin || allowedOrigins.has(origin) || isLocalhostDev) {
-            return callback(null, true);
-        }
-        return callback(new Error("Not allowed by CORS"));
-    },
-    allowedHeaders: ['Content-Type', 'Authorization']
-}))
+// Reflect request Origin so preview URLs, custom domains, and /_/backend all work.
+// (Passing an Error to cors() becomes a 500 in Express.)
+app.use(
+    cors({
+        credentials: true,
+        origin: true,
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+)
 const PORT = process.env.PORT || 5000;
 
 app.use(helmet({
@@ -55,6 +41,20 @@ app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
     res.json({ message: 'API is working properly' });
+});
+
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error("MongoDB:", err?.message || err);
+        return res.status(503).json({
+            message: err?.message || "Database unavailable",
+            error: true,
+            success: false,
+        });
+    }
 });
 
 app.use('/api/user', userRouter)
@@ -84,9 +84,16 @@ app.use((error, req, res, next) => {
     });
 });
 
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+connectDB()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("MongoDB startup:", err?.message || err);
+        if (process.env.VERCEL !== "1") {
+            process.exit(1);
+        }
     });
-})
 
