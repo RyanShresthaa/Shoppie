@@ -1,7 +1,14 @@
 /** API origin: explicit env, or Vercel experimental backend prefix, or local Express. */
 function resolveApiBaseURL() {
-    const explicit = import.meta.env.VITE_API_URL
-    if (explicit) return String(explicit).replace(/\/$/, "")
+    const raw = import.meta.env.VITE_API_URL
+    if (raw) {
+        const explicit = String(raw).replace(/\/$/, "")
+        // Build often inlines VITE_API_URL=http://localhost:5000 — in the browser that always fails.
+        const pointsAtLoopback = /localhost|127\.0\.0\.1/i.test(explicit)
+        if (!(import.meta.env.PROD && pointsAtLoopback)) {
+            return explicit
+        }
+    }
 
     if (import.meta.env.DEV) return "http://localhost:5000"
 
