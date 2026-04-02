@@ -1,4 +1,18 @@
-export const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000"
+/** API origin: explicit env, or Vercel experimental backend prefix, or local Express. */
+function resolveApiBaseURL() {
+    const explicit = import.meta.env.VITE_API_URL
+    if (explicit) return String(explicit).replace(/\/$/, "")
+
+    if (import.meta.env.DEV) return "http://localhost:5000"
+
+    if (typeof window !== "undefined") {
+        return `${window.location.origin}/_/backend`
+    }
+
+    return "http://localhost:5000"
+}
+
+export const baseURL = resolveApiBaseURL()
 
 const SummaryApi = {
     register : {
