@@ -1,35 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* hook these from components with var(--app-*) */
 :root {
-  --app-bg: #f5f6f8;
+  --app-bg: #f1f5f9;
   --app-surface: #ffffff;
-  --app-surface-alt: #f1f3f5;
-  --app-text: #1f2937;
-  --app-muted: #6b7280;
-  --app-border: #e5e7eb;
-  --app-accent: #111827;
-  --app-accent-hover: #000000;
-  --app-success: #16a34a;
+  --app-surface-alt: #f8fafc;
+  --app-text: #0f172a;
+  --app-muted: #64748b;
+  --app-border: #e2e8f0;
+  --app-accent: #059669;
+  --app-accent-hover: #047857;
+  --app-accent-muted: #d1fae5;
+  --app-success: #059669;
   --app-danger: #dc2626;
+  --app-ring: rgba(5, 150, 105, 0.25);
 }
 
-/* Mobile: prevent overflow and use safe areas for notched devices */
 html {
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
   height: 100%;
 }
+
 body {
   min-height: 100vh;
-  font-family: "Poppins", sans-serif;
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-style: normal;
-  @apply text-neutral-700;
-  background: var(--app-bg);
+  @apply text-slate-700 antialiased;
+  background-color: var(--app-bg);
+  background-image: radial-gradient(
+      at 0% 0%,
+      rgba(16, 185, 129, 0.07) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 100% 20%, rgba(13, 148, 136, 0.05) 0, transparent 45%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   color: var(--app-text);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
@@ -37,6 +47,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   margin: 0;
 }
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -44,29 +55,44 @@ body {
 }
 
 @layer components {
+  /* card-ish blocks */
   .app-surface {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(17, 24, 39, 0.04);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+  }
+
+  .app-surface-elevated {
+    @apply app-surface;
+    box-shadow: 0 4px 24px -4px rgba(15, 23, 42, 0.1);
   }
 
   .app-heading {
-    @apply font-semibold tracking-tight;
-    color: var(--app-text);
+    @apply font-display font-semibold tracking-tight text-slate-900;
   }
 
   .app-subtle {
     color: var(--app-muted);
   }
 
+  .app-section-title {
+    @apply app-heading text-xl md:text-2xl flex items-center gap-3;
+  }
+
+  .app-section-title::before {
+    content: "";
+    @apply w-1 h-7 md:h-8 rounded-full bg-brand-500 shrink-0;
+  }
+
   .app-btn {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
   }
 
   .app-btn-primary {
     background: var(--app-accent);
     color: #fff;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
   }
   .app-btn-primary:hover {
     background: var(--app-accent-hover);
@@ -74,22 +100,23 @@ body {
 
   .app-btn-outline {
     border: 1px solid var(--app-border);
-    background: #fff;
+    background: var(--app-surface);
     color: var(--app-text);
   }
   .app-btn-outline:hover {
     background: var(--app-surface-alt);
+    border-color: #cbd5e1;
   }
 
   .app-input {
-    @apply w-full rounded-lg border px-3 py-2 text-sm outline-none transition;
+    @apply w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none transition;
     border-color: var(--app-border);
     background: #fff;
     color: var(--app-text);
   }
   .app-input:focus {
-    border-color: #9ca3af;
-    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+    border-color: var(--app-accent);
+    box-shadow: 0 0 0 3px var(--app-ring);
   }
 }
 
@@ -98,16 +125,18 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid rgba(17, 24, 39, 0.18);
+  outline: 2px solid var(--app-accent);
   outline-offset: 2px;
 }
 
-/* Better touch on mobile: no tap flash, prevent iOS input zoom */
+/* 16px inputs on real phones = no zoom on focus in safari */
 @media (hover: none) and (pointer: coarse) {
   * {
     -webkit-tap-highlight-color: transparent;
   }
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px;
   }
 }

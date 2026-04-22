@@ -17,7 +17,6 @@ const ProductListPage = () => {
   const AllSubCategory = useSelector(state => state.product.allSubCategory)
   const [DisplaySubCatory, setDisplaySubCategory] = useState([])
 
-  console.log(AllSubCategory)
 
   const subCategory = params?.subCategory?.split("-")
   const subCategoryName = subCategory?.slice(0, subCategory?.length - 1)?.join(" ")
@@ -75,7 +74,7 @@ const ProductListPage = () => {
   return (
     <section className='sticky top-24 lg:top-20'>
       <div className='container sticky top-24  mx-auto grid grid-cols-[90px,1fr]  md:grid-cols-[200px,1fr] lg:grid-cols-[280px,1fr]'>
-        {/**sub category **/}
+        {/* subs */}
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
             DisplaySubCatory.map((s, index) => {

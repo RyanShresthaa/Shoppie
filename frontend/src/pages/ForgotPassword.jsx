@@ -50,7 +50,6 @@ const ForgotPassword = () => {
         navigate("/verification-otp", { state: { email: data.email } });
       }
 
-      console.log(response);
     } catch (error) {
       AxiosToastError(error);
     }

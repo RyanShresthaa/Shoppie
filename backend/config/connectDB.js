@@ -3,16 +3,34 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// so Vercel cold/warm invocations don't spin up 10 mongo clients
 const globalForMongoose = globalThis;
 
-/** Reuse connection across Vercel serverless invocations */
+const READY_CONNECTED = 1;
+
 async function connectDB() {
     if (!process.env.MONGODB_URI) {
         throw new Error("MONGODB_URI is not set");
     }
 
-    if (globalForMongoose.__mongooseConn) {
-        return globalForMongoose.__mongooseConn;
+    const existing = globalForMongoose.__mongooseConn;
+    if (existing && existing.readyState === READY_CONNECTED) {
+        return existing;
+    }
+
+    // still handshaking, don't start another connect
+    if (existing && existing.readyState === 2 && globalForMongoose.__mongoosePromise) {
+        return globalForMongoose.__mongoosePromise;
+    }
+
+    if (existing && (existing.readyState === 0 || existing.readyState === 3)) {
+        globalForMongoose.__mongoosePromise = null;
+        globalForMongoose.__mongooseConn = null;
+        try {
+            await existing.close();
+        } catch {
+            // ignore
+        }
     }
 
     if (!globalForMongoose.__mongoosePromise) {
@@ -23,7 +41,7 @@ async function connectDB() {
             })
             .then((m) => {
                 globalForMongoose.__mongooseConn = m.connection;
-                console.log("connect DB");
+                console.log("mongodb up");
                 return m.connection;
             })
             .catch((err) => {

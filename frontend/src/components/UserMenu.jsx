@@ -9,6 +9,8 @@ import AxiosToastError from "../utils/AxiosToastError";
 import toast from "react-hot-toast";
 import { BiLinkExternal } from "react-icons/bi";
 
+const linkClass = "block rounded-lg px-2.5 py-1.5 text-slate-700 transition hover:bg-brand-50 hover:text-brand-800";
+
 const UserMenu = ({ close }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -37,83 +39,63 @@ const UserMenu = ({ close }) => {
   };
 
   return (
-    <div>
-      <div className="font-semibold"> My Account </div>
-      <div className="text-sm flex items-center gap-3">
-        <span className="max-w-52 text-ellipsis line-clamp-1">
+    <div className="p-0.5">
+      <p className="px-1 font-display font-semibold text-slate-900">My account</p>
+      <div className="mt-1 flex items-center justify-between gap-2 px-1 text-sm text-slate-600">
+        <span className="max-w-[10rem] truncate" title={user.name || user.mobile}>
           {user.name || user.mobile}
         </span>
-        <Link onClick={handleClose} to={"/dashboard/profile"}>
-          <BiLinkExternal size={17} className="hover:text-primary-light" />
+        <Link
+          onClick={handleClose}
+          to={"/dashboard/profile"}
+          className="rounded p-0.5 text-slate-500 transition hover:text-brand-600"
+          aria-label="Open profile"
+        >
+          <BiLinkExternal size={17} />
         </Link>
       </div>
-      <Divider />
-      <div className="text-sm grid gap-2">
+      <div className="my-2">
+        <Divider />
+      </div>
+      <div className="grid gap-0.5 text-sm">
         {user?.role === "Admin" && (
           <>
-            <Link
-              onClick={handleClose}
-              to={"/dashboard/category"}
-              className="px-2  hover:bg-blue-200"
-            >
+            <Link onClick={handleClose} to={"/dashboard/category"} className={linkClass}>
               Category
             </Link>
 
-            <Link
-              onClick={handleClose}
-              to={"/dashboard/subcategory"}
-              className="px-2  hover:bg-blue-200"
-            >
-              Sub Category
+            <Link onClick={handleClose} to={"/dashboard/subcategory"} className={linkClass}>
+              Sub category
             </Link>
 
-            <Link
-              onClick={handleClose}
-              to={"/dashboard/product"}
-              className="px-2  hover:bg-blue-200"
-            >
+            <Link onClick={handleClose} to={"/dashboard/product"} className={linkClass}>
               Product
             </Link>
 
-            <Link
-              onClick={handleClose}
-              to={"/dashboard/uploadproduct"}
-              className="px-2  hover:bg-blue-200"
-            >
-              Upload Product
+            <Link onClick={handleClose} to={"/dashboard/uploadproduct"} className={linkClass}>
+              Upload product
             </Link>
           </>
         )}
 
         {user?.role !== "Admin" && (
-          <Link
-            onClick={handleClose}
-            to={"/dashboard/product"}
-            className="px-2  hover:bg-blue-200"
-          >
+          <Link onClick={handleClose} to={"/dashboard/product"} className={linkClass}>
             Products
           </Link>
         )}
 
-        <Link
-          onClick={handleClose}
-          to={"/dashboard/MyOrders"}
-          className="px-2  hover:bg-blue-200"
-        >
-          My Orders
+        <Link onClick={handleClose} to={"/dashboard/MyOrders"} className={linkClass}>
+          My orders
         </Link>
-        <Link
-          onClick={handleClose}
-          to={"/dashboard/Address"}
-          className="px-2  hover:bg-blue-200"
-        >
-          Save Address
+        <Link onClick={handleClose} to={"/dashboard/Address"} className={linkClass}>
+          Saved addresses
         </Link>
         <button
           onClick={handleLogOut}
-          className="text-left px-2 hover:bg-red-500"
+          className="mt-0.5 w-full rounded-lg px-2.5 py-1.5 text-left text-sm text-red-600 transition hover:bg-red-50"
+          type="button"
         >
-          Log Out
+          Log out
         </button>
       </div>
     </div>

@@ -1,15 +1,15 @@
 export const IMG_LOGO =
-  "https://placehold.co/120x40/16a34a/ffffff?text=Shopiee";
+  "https://placehold.co/120x40/059669/ffffff?text=Shoppie&font=dm-sans";
 export const IMG_BANNER_DESKTOP =
-  "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1200&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=500&auto=format&fit=crop&q=86";
 export const IMG_BANNER_MOBILE =
-  "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=520&auto=format&fit=crop&q=86";
 export const IMG_EMPTY_CART =
-  "https://placehold.co/280x200/f1f5f9/64748b?text=Empty+cart";
+  "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=560&h=400&auto=format&fit=crop&q=80&sat=-20";
 export const IMG_NO_DATA =
-  "https://placehold.co/200x200/f1f5f9/64748b?text=No+data";
+  "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&auto=format&fit=crop&q=80";
 export const IMG_NO_SEARCH =
-  "https://placehold.co/320x240/f1f5f9/64748b?text=Nothing+here+yet";
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d4?w=640&h=480&auto=format&fit=crop&q=80";
 export const IMG_FEATURE_DELIVERY =
   "https://placehold.co/96x96/dcfce7/166534?text=Fast";
 export const IMG_FEATURE_PRICE =

@@ -111,7 +111,7 @@ export async function verifyEmailController(request,response){
     }
 }
 
-//login controller
+// login
 export async function loginController(request,response){
     try {
         const { email , password } = request.body
@@ -183,10 +183,10 @@ export async function loginController(request,response){
     }
 }
 
-//logout controller
+// logout
 export async function logOutController(request,response){
     try {
-        const userid = request.userId //middleware
+        const userid = request.userId
 
         const cookiesOption = getCookieOptions()
 
@@ -211,11 +211,11 @@ export async function logOutController(request,response){
     }
 }
 
-//upload user avatar
-export async  function uploadAvatar(request,response){
+// avatar
+export async function uploadAvatar(request,response){
     try {
-        const userId = request.userId // auth middlware
-        const image = request.file  // multer middleware
+        const userId = request.userId
+        const image = request.file
 
         const upload = await uploadImageClodinary(image)
         
@@ -242,10 +242,10 @@ export async  function uploadAvatar(request,response){
     }
 }
 
-//update user details
+// profile
 export async function updateUserDetails(request,response){
     try {
-        const userId = request.userId //auth middleware
+        const userId = request.userId
         const { name, email, mobile, password } = request.body 
 
         let hashPassword = ""
@@ -279,7 +279,7 @@ export async function updateUserDetails(request,response){
     }
 }
 
-//forgot password not login
+// forgot password (no session)
 export async function forgotPasswordController(request,response) {
     try {
         const { email } = request.body 
@@ -326,7 +326,7 @@ export async function forgotPasswordController(request,response) {
     }
 }
 
-//verify forgot password otp
+// verify forgot-password otp
 export async function verifyForgotPasswordOtp(request,response){
     try {
         const { email , otp }  = request.body
@@ -367,9 +367,6 @@ export async function verifyForgotPasswordOtp(request,response){
             })
         }
 
-        //if otp is not expired
-        //otp === user.forgot_password_otp
-
         const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
             forgot_password_otp : "",
             forgot_password_expiry : ""
@@ -390,7 +387,7 @@ export async function verifyForgotPasswordOtp(request,response){
     }
 }
 
-//reset the password
+// new password after otp
 export async function resetpassword(request,response){
     try {
         const { email , newPassword, confirmPassword } = request.body 
@@ -442,10 +439,10 @@ export async function resetpassword(request,response){
 }
 
 
-//refresh token controler
+// refresh access token
 export async function refreshToken(request,response){
     try {
-        const refreshToken = request.cookies.refreshToken || request?.headers?.authorization?.split(" ")[1]  /// [ Bearer token]
+        const refreshToken = request.cookies.refreshToken || request?.headers?.authorization?.split(" ")[1]
 
         if(!refreshToken){
             return response.status(401).json({
@@ -492,12 +489,10 @@ export async function refreshToken(request,response){
     }
 }
 
-//get login user details
+// me
 export async function userDetails(request,response){
     try {
         const userId  = request.userId
-
-        console.log(userId)
 
         const user = await UserModel.findById(userId).select('-password -refresh_token')
 

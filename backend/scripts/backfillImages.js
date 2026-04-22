@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 import CategoryModel from "../models/category.model.js";
 import SubCategoryModel from "../models/subCategory.model.js";
 import ProductModel from "../models/product.model.js";
+import {
+  productImageFromName,
+  categoryImageFromName,
+  subCategoryImageFromName,
+} from "../utils/groceryImageUrls.js";
 
 dotenv.config();
-
-const productImage = (name) =>
-  `https://placehold.co/800x800/f3f4f6/111827?text=${encodeURIComponent(name)}`;
-const categoryImage = (name) =>
-  `https://placehold.co/800x800/e5e7eb/111827?text=${encodeURIComponent(name)}`;
 
 const hasValidImage = (value) => {
   if (Array.isArray(value)) {
@@ -25,7 +25,7 @@ const run = async () => {
   }
 
   await mongoose.connect(process.env.MONGODB_URI);
-  console.log("Connected to DB for image backfill");
+  console.log("connected, patching images...");
 
   let updatedProducts = 0;
   let updatedCategories = 0;
@@ -34,7 +34,7 @@ const run = async () => {
   const products = await ProductModel.find({});
   for (const product of products) {
     if (force || !hasValidImage(product.image)) {
-      product.image = [productImage(product.name)];
+      product.image = [productImageFromName(product.name)];
       await product.save();
       updatedProducts += 1;
     }
@@ -43,7 +43,7 @@ const run = async () => {
   const categories = await CategoryModel.find({});
   for (const category of categories) {
     if (force || !hasValidImage(category.image)) {
-      category.image = categoryImage(category.name);
+      category.image = categoryImageFromName(category.name);
       await category.save();
       updatedCategories += 1;
     }
@@ -52,14 +52,14 @@ const run = async () => {
   const subCategories = await SubCategoryModel.find({});
   for (const subCategory of subCategories) {
     if (force || !hasValidImage(subCategory.image)) {
-      subCategory.image = categoryImage(subCategory.name);
+      subCategory.image = subCategoryImageFromName(subCategory.name);
       await subCategory.save();
       updatedSubCategories += 1;
     }
   }
 
   console.log(
-    `Backfill complete | products: ${updatedProducts}, categories: ${updatedCategories}, subcategories: ${updatedSubCategories}`
+    `done — products ${updatedProducts}, categories ${updatedCategories}, subcats ${updatedSubCategories}`
   );
 
   await mongoose.disconnect();
@@ -68,8 +68,7 @@ const run = async () => {
 run()
   .then(() => process.exit(0))
   .catch(async (err) => {
-    console.error("Image backfill failed:", err.message);
+    console.error("backfill blew up:", err.message);
     await mongoose.disconnect();
     process.exit(1);
   });
-

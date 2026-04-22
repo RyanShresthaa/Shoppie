@@ -33,13 +33,13 @@ const Header = () => {
     setOpenUserMenu(false);
   };
 
-  const handleMobileUser =()=>{
-    if(!user._id){
-      navigate("/login")
-      return
+  const handleMobileUser = () => {
+    if (!user?._id) {
+      navigate("/login");
+      return;
     }
-    navigate("/user")
-  }
+    navigate("/user");
+  };
 
   const handleOpenCart = () => {
     navigate("/cart");
@@ -82,79 +82,86 @@ const Header = () => {
   }, [location.pathname]);
 
   return (
-    <header className="h-16 sm:h-20 lg:h-20 sticky top-0 z-40 flex flex-col justify-center bg-white/95 backdrop-blur border-b border-neutral-200 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       {!(isSearchPage && isMobile) && (
-        <div className="container mx-auto flex items-center px-3 sm:px-4 justify-between min-w-0 gap-4">
-          {/* logo */}
-          <div className="flex-shrink-0 min-w-0 flex items-center">
-            <Link to={"/"} className="flex justify-center items-center">
+        <div className="container mx-auto flex h-16 sm:h-[4.25rem] items-center justify-between gap-3 px-3 sm:px-4 min-w-0">
+          <div className="flex min-w-0 flex-shrink-0 items-center">
+            <Link to={"/"} className="flex items-center justify-center rounded-lg outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600">
               <img
                 src={IMG_LOGO}
                 width={150}
                 height={60}
-                alt="Shopie"
-                className="hidden lg:block object-contain"
+                alt="Shoppie"
+                className="hidden h-12 w-auto object-contain lg:block"
               />
               <img
                 src={IMG_LOGO}
                 width={100}
                 height={40}
-                alt="Shopie"
-                className="lg:hidden max-h-10 w-auto object-contain"
+                alt="Shoppie"
+                className="h-9 w-auto max-w-[7rem] object-contain lg:hidden"
               />
             </Link>
           </div>
-          {/* search bar */}
-          <div className="hidden lg:block flex-1 max-w-2xl">
+
+          <div className="hidden min-w-0 flex-1 max-w-2xl lg:block">
             <Search />
           </div>
 
-          {/* nav items / mobile */}
-          <div>
-            <button className="text-neutral-600 lg:hidden rounded-full p-2 hover:bg-neutral-100" onClick={handleMobileUser}>
-              <FaUser size={24}/>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              className="rounded-full p-2.5 text-slate-600 transition hover:bg-slate-100 lg:hidden"
+              aria-label="Account"
+              onClick={handleMobileUser}
+            >
+              <FaUser size={22} />
             </button>
-          </div>
-          {/* nav items / desktop*/}
-          <div className="hidden lg:flex items-center gap-6">
-            {user?._id ? (
-              <div className="hidden lg:flex items-center gap-6" ref={menuRef}>
-                <div
-                  onClick={() => setOpenUserMenu((preve) => !preve)}
-                  className="flex select-none items-center gap-1 cursor-pointer rounded-full border border-neutral-200 px-3 py-2 hover:bg-neutral-100"
-                >
-                  <p>Account</p>
-                  {openUserMenu ? (
-                    <VscTriangleUp size={20} />
-                  ) : (
-                    <VscTriangleDown size={20} />
+
+            <div className="hidden items-center gap-3 lg:flex">
+              {user?._id ? (
+                <div className="relative" ref={menuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenUserMenu((p) => !p)}
+                    className="flex cursor-pointer select-none items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                  >
+                    Account
+                    {openUserMenu ? <VscTriangleUp size={18} /> : <VscTriangleDown size={18} />}
+                  </button>
+                  {openUserMenu && (
+                    <div className="absolute right-0 top-full z-50 mt-2 min-w-[13rem]">
+                      <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-card">
+                        <UserMenu close={handleCloseUserMenu} />
+                      </div>
+                    </div>
                   )}
                 </div>
-                {openUserMenu && (
-                  <div className="absolute right-24 top-20 ">
-                    <div className="bg-white rounded-xl border border-neutral-200 p-4 min-w-52 shadow-xl">
-                      <UserMenu close={handleCloseUserMenu} />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button onClick={redirectToLoginPage} className="app-btn app-btn-outline">
-                Login
+              ) : (
+                <button type="button" onClick={redirectToLoginPage} className="app-btn app-btn-outline px-5">
+                  Log in
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleOpenCart}
+                className="app-btn app-btn-primary group relative flex items-center gap-2.5 rounded-2xl pl-3 pr-4 py-2.5 shadow-md shadow-brand-600/20"
+              >
+                <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
+                  <TiShoppingCart className="h-7 w-7" />
+                  {cartCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-bold text-slate-900 ring-2 ring-white">
+                      {cartCount > 99 ? "99+" : cartCount}
+                    </span>
+                  )}
+                </span>
+                <span className="text-left leading-tight">
+                  <span className="block text-xs font-medium text-emerald-100/90">Cart</span>
+                  <span className="text-sm font-bold">View bag</span>
+                </span>
               </button>
-            )}
-            <button
-              onClick={handleOpenCart}
-              className="app-btn app-btn-primary flex items-center gap-2 px-4 py-2.5"
-            >
-              <div>
-                <TiShoppingCart size={28} />
-              </div>
-              <div className="font-semibold">
-                <p>My Cart</p>
-                <p className="text-xs text-right">{cartCount}</p>
-              </div>
-            </button>
+            </div>
           </div>
         </div>
       )}

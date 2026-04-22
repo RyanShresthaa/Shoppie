@@ -183,7 +183,7 @@ const getOrderProductItems = async({
     return productList
 }
 
-//http://localhost:8080/api/order/webhook
+// stripe callback (raw body in route)
 export async function webhookStripe(request,response){
     if(!Stripe){
         return response.status(503).json({ message : "Stripe not configured", error : true, success : false })
@@ -191,9 +191,6 @@ export async function webhookStripe(request,response){
     const event = request.body;
     const endPointSecret = process.env.STRIPE_ENPOINT_WEBHOOK_SECRET_KEY
 
-    console.log("event",event)
-
-    // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
       const session = event.data.object;
@@ -210,7 +207,6 @@ export async function webhookStripe(request,response){
     
       const order = await OrderModel.insertMany(orderProduct)
 
-        console.log(order)
         if(Boolean(order[0])){
             const removeCartItems = await  UserModel.findByIdAndUpdate(userId,{
                 shopping_cart : []
@@ -219,17 +215,16 @@ export async function webhookStripe(request,response){
         }
       break;
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      break
   }
 
-  // Return a response to acknowledge receipt of the event
   response.json({received: true});
 }
 
 
 export async function getOrderDetailsController(request,response){
     try {
-        const userId = request.userId // order id
+        const userId = request.userId
 
         const orderlist = await OrderModel.find({ userId : userId }).sort({ createdAt : -1 }).populate('delivery_address')
 

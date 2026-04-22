@@ -1,20 +1,24 @@
+// Wipes categories / subcategories / products then inserts demo data. Don't run on prod.
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import CategoryModel from "../models/category.model.js";
 import SubCategoryModel from "../models/subCategory.model.js";
 import ProductModel from "../models/product.model.js";
+import {
+  categoryImageFromName,
+  subCategoryImageFromName,
+  productImageFromName,
+} from "../utils/groceryImageUrls.js";
 
 dotenv.config();
 
-const img = (query) => `https://picsum.photos/seed/${encodeURIComponent(query)}/1200/900`;
-
 const catalog = [
   {
-    category: { name: "Fruits", image: img("fresh fruits market") },
+    category: { name: "Fruits", image: categoryImageFromName("Fruits") },
     subcategories: [
       {
         name: "Apple",
-        image: img("red apple"),
+        image: subCategoryImageFromName("Apple"),
         products: [
           ["Royal Gala Apple", 249, "1kg"],
           ["Kashmiri Apple", 279, "1kg"],
@@ -24,7 +28,7 @@ const catalog = [
       },
       {
         name: "Banana",
-        image: img("banana bunch"),
+        image: subCategoryImageFromName("Banana"),
         products: [
           ["Robusta Banana", 89, "6 pcs"],
           ["Yelakki Banana", 129, "12 pcs"],
@@ -34,7 +38,7 @@ const catalog = [
       },
       {
         name: "Mango",
-        image: img("ripe mangoes"),
+        image: subCategoryImageFromName("Mango"),
         products: [
           ["Alphonso Mango", 399, "1kg"],
           ["Kesar Mango", 329, "1kg"],
@@ -45,11 +49,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Vegetables", image: img("green vegetables") },
+    category: { name: "Vegetables", image: categoryImageFromName("Vegetables") },
     subcategories: [
       {
         name: "Leafy Greens",
-        image: img("spinach greens"),
+        image: subCategoryImageFromName("Leafy Greens"),
         products: [
           ["Spinach", 59, "500g"],
           ["Methi Leaves", 49, "250g"],
@@ -59,7 +63,7 @@ const catalog = [
       },
       {
         name: "Root Vegetables",
-        image: img("potato carrot beetroot"),
+        image: subCategoryImageFromName("Root Vegetables"),
         products: [
           ["Potato", 35, "1kg"],
           ["Onion", 42, "1kg"],
@@ -69,7 +73,7 @@ const catalog = [
       },
       {
         name: "Exotic Vegetables",
-        image: img("broccoli bell pepper"),
+        image: subCategoryImageFromName("Exotic Vegetables"),
         products: [
           ["Broccoli", 99, "250g"],
           ["Red Bell Pepper", 115, "250g"],
@@ -80,11 +84,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Dairy & Eggs", image: img("milk dairy products") },
+    category: { name: "Dairy & Eggs", image: categoryImageFromName("Dairy & Eggs") },
     subcategories: [
       {
         name: "Milk",
-        image: img("milk bottle"),
+        image: subCategoryImageFromName("Milk"),
         products: [
           ["Toned Milk", 62, "1L"],
           ["Full Cream Milk", 70, "1L"],
@@ -94,7 +98,7 @@ const catalog = [
       },
       {
         name: "Curd & Yogurt",
-        image: img("yogurt bowl"),
+        image: subCategoryImageFromName("Curd & Yogurt"),
         products: [
           ["Fresh Curd", 42, "400g"],
           ["Greek Yogurt", 75, "400g"],
@@ -104,7 +108,7 @@ const catalog = [
       },
       {
         name: "Eggs",
-        image: img("brown eggs tray"),
+        image: subCategoryImageFromName("Eggs"),
         products: [
           ["Farm Eggs", 84, "6 pcs"],
           ["Country Eggs", 120, "6 pcs"],
@@ -115,11 +119,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Bakery", image: img("bakery bread") },
+    category: { name: "Bakery", image: categoryImageFromName("Bakery") },
     subcategories: [
       {
         name: "Bread",
-        image: img("bread loaf"),
+        image: subCategoryImageFromName("Bread"),
         products: [
           ["Whole Wheat Bread", 45, "400g"],
           ["Brown Bread", 42, "400g"],
@@ -129,7 +133,7 @@ const catalog = [
       },
       {
         name: "Cakes & Muffins",
-        image: img("cupcake muffins"),
+        image: subCategoryImageFromName("Cakes & Muffins"),
         products: [
           ["Vanilla Muffin", 35, "2 pcs"],
           ["Chocolate Muffin", 40, "2 pcs"],
@@ -139,7 +143,7 @@ const catalog = [
       },
       {
         name: "Cookies",
-        image: img("cookies biscuits"),
+        image: subCategoryImageFromName("Cookies"),
         products: [
           ["Butter Cookies", 75, "250g"],
           ["Choco Chip Cookies", 95, "250g"],
@@ -150,11 +154,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Snacks", image: img("snacks chips namkeen") },
+    category: { name: "Snacks", image: categoryImageFromName("Snacks") },
     subcategories: [
       {
         name: "Chips",
-        image: img("potato chips packet"),
+        image: subCategoryImageFromName("Chips"),
         products: [
           ["Classic Salted Chips", 25, "50g"],
           ["Cream & Onion Chips", 25, "50g"],
@@ -164,7 +168,7 @@ const catalog = [
       },
       {
         name: "Namkeen",
-        image: img("namkeen mixture"),
+        image: subCategoryImageFromName("Namkeen"),
         products: [
           ["Aloo Bhujia", 55, "200g"],
           ["Navratan Mix", 60, "200g"],
@@ -174,7 +178,7 @@ const catalog = [
       },
       {
         name: "Chocolate",
-        image: img("chocolate bars"),
+        image: subCategoryImageFromName("Chocolate"),
         products: [
           ["Milk Chocolate Bar", 40, "50g"],
           ["Dark Chocolate", 90, "80g"],
@@ -185,11 +189,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Beverages", image: img("soft drinks juices") },
+    category: { name: "Beverages", image: categoryImageFromName("Beverages") },
     subcategories: [
       {
         name: "Juice",
-        image: img("orange juice"),
+        image: subCategoryImageFromName("Juice"),
         products: [
           ["Orange Juice", 120, "1L"],
           ["Mixed Fruit Juice", 130, "1L"],
@@ -199,7 +203,7 @@ const catalog = [
       },
       {
         name: "Soft Drinks",
-        image: img("cold drink bottle"),
+        image: subCategoryImageFromName("Soft Drinks"),
         products: [
           ["Cola Drink", 40, "750ml"],
           ["Lemon Drink", 40, "750ml"],
@@ -209,7 +213,7 @@ const catalog = [
       },
       {
         name: "Tea & Coffee",
-        image: img("tea coffee beans"),
+        image: subCategoryImageFromName("Tea & Coffee"),
         products: [
           ["CTC Tea", 170, "500g"],
           ["Green Tea", 220, "100g"],
@@ -220,11 +224,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Rice & Atta", image: img("rice wheat flour") },
+    category: { name: "Rice & Atta", image: categoryImageFromName("Rice & Atta") },
     subcategories: [
       {
         name: "Rice",
-        image: img("basmati rice"),
+        image: subCategoryImageFromName("Rice"),
         products: [
           ["Basmati Rice", 699, "5kg"],
           ["Sona Masoori Rice", 489, "5kg"],
@@ -234,7 +238,7 @@ const catalog = [
       },
       {
         name: "Atta",
-        image: img("wheat flour atta"),
+        image: subCategoryImageFromName("Atta"),
         products: [
           ["Whole Wheat Atta", 299, "5kg"],
           ["Multigrain Atta", 349, "5kg"],
@@ -244,7 +248,7 @@ const catalog = [
       },
       {
         name: "Pulses",
-        image: img("lentils pulses"),
+        image: subCategoryImageFromName("Pulses"),
         products: [
           ["Toor Dal", 185, "1kg"],
           ["Moong Dal", 169, "1kg"],
@@ -255,11 +259,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Personal Care", image: img("personal care products") },
+    category: { name: "Personal Care", image: categoryImageFromName("Personal Care") },
     subcategories: [
       {
         name: "Shampoo",
-        image: img("shampoo bottle"),
+        image: subCategoryImageFromName("Shampoo"),
         products: [
           ["Herbal Shampoo", 229, "340ml"],
           ["Anti Dandruff Shampoo", 289, "340ml"],
@@ -269,7 +273,7 @@ const catalog = [
       },
       {
         name: "Soap",
-        image: img("bath soap bar"),
+        image: subCategoryImageFromName("Soap"),
         products: [
           ["Moisturizing Soap", 45, "125g"],
           ["Sandal Soap", 55, "125g"],
@@ -279,7 +283,7 @@ const catalog = [
       },
       {
         name: "Toothpaste",
-        image: img("toothpaste"),
+        image: subCategoryImageFromName("Toothpaste"),
         products: [
           ["Whitening Toothpaste", 120, "200g"],
           ["Herbal Toothpaste", 95, "200g"],
@@ -290,11 +294,11 @@ const catalog = [
     ],
   },
   {
-    category: { name: "Home Cleaning", image: img("home cleaning products") },
+    category: { name: "Home Cleaning", image: categoryImageFromName("Home Cleaning") },
     subcategories: [
       {
         name: "Dishwash",
-        image: img("dishwash liquid"),
+        image: subCategoryImageFromName("Dishwash"),
         products: [
           ["Dishwash Gel", 115, "500ml"],
           ["Dishwash Bar", 30, "250g"],
@@ -304,7 +308,7 @@ const catalog = [
       },
       {
         name: "Floor Cleaner",
-        image: img("floor cleaner bottle"),
+        image: subCategoryImageFromName("Floor Cleaner"),
         products: [
           ["Citrus Floor Cleaner", 190, "1L"],
           ["Lavender Floor Cleaner", 199, "1L"],
@@ -314,7 +318,7 @@ const catalog = [
       },
       {
         name: "Laundry",
-        image: img("laundry detergent"),
+        image: subCategoryImageFromName("Laundry"),
         products: [
           ["Detergent Powder", 310, "2kg"],
           ["Liquid Detergent", 289, "1L"],
@@ -339,7 +343,7 @@ for (const section of catalog) {
         unit,
         discount: Math.floor(Math.random() * 16),
         description: `${name} from ${section.category.name}. Fresh stock with fast delivery.`,
-        image: [img(`${name} grocery product`)],
+        image: [productImageFromName(name)],
       });
     }
   }

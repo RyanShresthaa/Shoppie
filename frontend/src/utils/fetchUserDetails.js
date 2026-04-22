@@ -5,8 +5,7 @@ const fetchUserDetails = async () => {
     try {
         const response = await Axios.get(SummaryApi.userDetails.url)
         return response.data
-    } catch (error) {
-        console.log(error)
+    } catch {
         return null
     }
 }

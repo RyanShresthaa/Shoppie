@@ -1,12 +1,11 @@
 import axios from "axios";
-import SummaryApi , { baseURL } from "../common/SummaryApi";
+import SummaryApi, { baseURL } from "../common/SummaryApi";
 
 const Axios = axios.create({
     baseURL : baseURL,
     withCredentials : true
 })
 
-//sending access token in the header
 Axios.interceptors.request.use(
     async(config)=>{
         const accessToken = localStorage.getItem('accesstoken')
@@ -22,7 +21,7 @@ Axios.interceptors.request.use(
     }
 )
 
-//extend the life span of access token with the help refresh
+// 401 -> try refresh once, then retry the same request
 Axios.interceptors.response.use(
     (response)=>{
         return response
@@ -62,8 +61,8 @@ const refreshAccessToken = async(refreshToken)=>{
         const accessToken = response.data.data.accessToken
         localStorage.setItem('accesstoken',accessToken)
         return accessToken
-    } catch (error) {
-        console.log(error)
+    } catch {
+        // refresh failed, let caller handle it
     }
 }
 

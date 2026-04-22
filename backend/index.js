@@ -4,7 +4,7 @@ dotenv.config();
 import userRouter from './route/user.route.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import helmet, { crossOriginResourcePolicy } from 'helmet';
+import helmet from 'helmet';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import connectDB from './config/connectDB.js';
@@ -19,10 +19,24 @@ import paymentRouter from './route/payment.route.js';
 import adminRouter from './route/admin.route.js';
 
 const app = express();
+
+// Vercel sends /_/backend/api/...; express only knows /api, so we strip the prefix
+app.use((req, res, next) => {
+    const prefix = "/_/backend";
+    const raw = req.url || "/";
+    const q = raw.indexOf("?");
+    const pathPart = q === -1 ? raw : raw.slice(0, q);
+    const query = q === -1 ? "" : raw.slice(q);
+    if (pathPart === prefix || pathPart.startsWith(prefix + "/")) {
+        const rest = pathPart.slice(prefix.length) || "/";
+        req.url = rest + query;
+    }
+    next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb', parameterLimit: 50000 }));
-// Reflect request Origin so preview URLs, custom domains, and /_/backend all work.
-// (Passing an Error to cors() becomes a 500 in Express.)
+// creds + reflect origin (works on preview domains)
 app.use(
     cors({
         credentials: true,
@@ -57,6 +71,13 @@ app.use(async (req, res, next) => {
     }
 });
 
+app.get("/api/health", (req, res) => {
+    res.json({
+        ok: true,
+        db: mongoose.connection.readyState,
+    });
+});
+
 app.use('/api/user', userRouter)
 app.use('/api/category', categoryRouter)
 app.use('/api/file', uploadRouter)
@@ -77,6 +98,7 @@ app.use((req, res) => {
 });
 
 app.use((error, req, res, next) => {
+    console.error("Unhandled error:", error?.stack || error?.message || error);
     return res.status(error?.status || 500).json({
         message: error?.message || "Internal server error",
         error: true,

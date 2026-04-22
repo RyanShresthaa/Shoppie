@@ -1,4 +1,4 @@
-import Router from 'express'
+import { Router } from "express";
 import { AddCategoryController, deleteCategoryController, getCategoryController, updateCategoryController } from '../controllers/category.controller.js'
 import auth from '../middleware/auth.js'
 

@@ -69,9 +69,10 @@ const Login = () => {
 
     }
     return (
-        <section className='w-full container mx-auto px-2 py-6'>
-            <div className='app-surface my-4 w-full max-w-lg mx-auto rounded-xl p-7'>
-                <h1 className='app-heading text-xl'>Welcome back</h1>
+        <section className="w-full container mx-auto max-w-7xl px-3 py-10 sm:px-4">
+            <div className="app-surface-elevated my-2 w-full max-w-md mx-auto rounded-2xl p-8 sm:p-9">
+                <h1 className="app-heading text-2xl sm:text-3xl">Welcome back</h1>
+                <p className="app-subtle mt-1 text-sm">Sign in to continue shopping.</p>
 
                 <form className='grid gap-4 py-4' onSubmit={handleSubmit}>
                     <div className='grid gap-1'>
@@ -111,7 +112,7 @@ const Login = () => {
                         <Link to={"/forgot-password"} className='block ml-auto text-sm hover:text-neutral-900'>Forgot password ?</Link>
                     </div>
     
-                    <button disabled={!valideValue} className={`app-btn ${valideValue ? "app-btn-primary" : "bg-gray-500 text-white"} w-full`}>Login</button>
+                    <button type="submit" disabled={!valideValue} className={`app-btn w-full ${valideValue ? "app-btn-primary" : "bg-slate-300 text-slate-500 cursor-not-allowed"}`}>Log in</button>
 
                 </form>
 
