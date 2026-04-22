@@ -3,13 +3,21 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-if(!process.env.RESEND_API){
-    console.log("Provide RESEND_API inside .env file")
+// Resend() throws if the key is missing; doing that at import time took down the whole API on Vercel.
+let resendSingleton = null;
+function getResend() {
+    const key = process.env.RESEND_API;
+    if (!key) return null;
+    if (!resendSingleton) resendSingleton = new Resend(key);
+    return resendSingleton;
 }
 
-const resend = new Resend(process.env.RESEND_API);
-
 const sendEmail = async ({ sendTo, subject, html})=>{
+    const resend = getResend();
+    if (!resend) {
+        console.warn("RESEND_API is not set; email skipped");
+        return { error: "Email service is not configured" };
+    }
     try {
         const { data, error } = await resend.emails.send({
             from: 'Clone <onboarding@resend.dev>',
